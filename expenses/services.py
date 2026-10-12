@@ -5,11 +5,13 @@ Encapsulates financial aggregations, date filtering, chart metrics, and secure C
 
 import csv
 import io
-from decimal import Decimal
 from datetime import date, datetime, timedelta
-from django.db.models import Sum, Count, Q
+from decimal import Decimal
+
+from django.db.models import Count, Sum
 from django.utils import timezone
-from .models import Transaction, Budget, Category
+
+from .models import Budget, Transaction
 
 
 class FinanceService:
@@ -112,7 +114,6 @@ class FinanceService:
         all_time_balance = all_time_income - all_time_expense
 
         # Previous month comparison for expense trends
-        today = timezone.now().date()
         prev_month_start, prev_month_end = FinanceService.get_date_range('last_month')
         prev_month_expense = Transaction.objects.filter(
             user=user,

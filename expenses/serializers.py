@@ -4,8 +4,10 @@ Provides user-scoped serialization, nested representations, and ownership valida
 """
 
 from decimal import Decimal
+
 from rest_framework import serializers
-from .models import Category, Transaction, Budget, UserProfile
+
+from .models import Budget, Category, Transaction
 
 
 class CategorySerializer(serializers.ModelSerializer):

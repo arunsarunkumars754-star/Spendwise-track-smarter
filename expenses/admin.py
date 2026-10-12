@@ -3,7 +3,8 @@ Django admin configuration for SpendWise models.
 """
 
 from django.contrib import admin
-from .models import UserProfile, Category, Transaction, Budget, RecurringTransaction
+
+from .models import Budget, Category, RecurringTransaction, Transaction, UserProfile
 
 
 @admin.register(UserProfile)

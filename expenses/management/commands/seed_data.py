@@ -2,14 +2,21 @@
 Management command to seed SpendWise with rich, realistic demonstration data.
 """
 
+from datetime import timedelta
 from decimal import Decimal
-from datetime import date, timedelta
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from django.utils import timezone
 
-from expenses.models import Category, Transaction, Budget, UserProfile, create_default_categories_for_user
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from rest_framework.authtoken.models import Token
+
+from expenses.models import (
+    Budget,
+    Category,
+    Transaction,
+    UserProfile,
+    create_default_categories_for_user,
+)
 
 
 class Command(BaseCommand):
@@ -22,7 +29,7 @@ class Command(BaseCommand):
         password = 'DemoUser@123'
         email = 'demo@spendwise.local'
 
-        user, created = User.objects.get_or_create(username=username, defaults={
+        user, _ = User.objects.get_or_create(username=username, defaults={
             'first_name': 'Aarav',
             'last_name': 'Sharma',
             'email': email,
@@ -30,7 +37,7 @@ class Command(BaseCommand):
         user.set_password(password)
         user.save()
 
-        profile, _ = UserProfile.objects.get_or_create(user=user, defaults={
+        UserProfile.objects.get_or_create(user=user, defaults={
             'currency': 'INR',
             'phone': '+91 9876543210',
             'bio': 'AIML Student & Software Developer tracking financial health with SpendWise.',

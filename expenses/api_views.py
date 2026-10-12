@@ -3,21 +3,20 @@ Django REST Framework API views for SpendWise.
 Provides versioned /api/v1/ endpoints for Transactions, Categories, Budgets, Dashboard, Analytics, and CSV Export.
 """
 
-from decimal import Decimal
 from django.http import HttpResponse
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions, status, filters
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import filters, permissions, status, viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Category, Transaction, Budget
-from .serializers import CategorySerializer, TransactionSerializer, BudgetSerializer
+from .models import Budget, Category, Transaction
 from .permissions import IsOwner
+from .serializers import BudgetSerializer, CategorySerializer, TransactionSerializer
 from .services import FinanceService
 
 
@@ -33,7 +32,7 @@ class CustomAuthToken(ObtainAuthToken):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
             'user_id': user.pk,

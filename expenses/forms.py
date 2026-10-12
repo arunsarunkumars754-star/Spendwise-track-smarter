@@ -4,11 +4,19 @@ Includes user registration, profile editing, transaction management, category ma
 """
 
 from decimal import Decimal
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import UserProfile, Category, Transaction, Budget, create_default_categories_for_user
+
+from .models import (
+    Budget,
+    Category,
+    Transaction,
+    UserProfile,
+    create_default_categories_for_user,
+)
 
 
 class UserRegistrationForm(forms.ModelForm):

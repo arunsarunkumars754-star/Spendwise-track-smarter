@@ -2,16 +2,17 @@
 API URL Routing for SpendWise /api/v1/ endpoints.
 """
 
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from .api_views import (
-    CategoryViewSet,
-    TransactionViewSet,
-    BudgetViewSet,
-    DashboardSummaryAPIView,
     AnalyticsAPIView,
+    BudgetViewSet,
+    CategoryViewSet,
+    CustomAuthToken,
+    DashboardSummaryAPIView,
     ExportTransactionsAPIView,
-    CustomAuthToken
+    TransactionViewSet,
 )
 
 router = DefaultRouter()

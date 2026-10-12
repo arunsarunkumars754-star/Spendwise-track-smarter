@@ -4,27 +4,33 @@ Implements authentication, dashboard, transactions, categories, budgets, analyti
 """
 
 from decimal import Decimal
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, update_session_auth_hash
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
-from django.utils import timezone
-from django.db.models import Sum, Count, Q
 
-from .models import Category, Transaction, Budget, UserProfile, create_default_categories_for_user
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.models import User
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count, Q, Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+
 from .forms import (
-    UserRegistrationForm,
-    UserProfileForm,
+    BudgetForm,
     CategoryForm,
     TransactionForm,
-    BudgetForm
+    UserProfileForm,
+    UserRegistrationForm,
+)
+from .models import (
+    Budget,
+    Category,
+    Transaction,
+    UserProfile,
+    create_default_categories_for_user,
 )
 from .services import FinanceService
-
 
 # ==============================================================================
 # Public Showcase & Landing Views

@@ -4,7 +4,10 @@ Provides global template variables such as branding, default currency, and curre
 """
 
 from datetime import datetime
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+
 
 def spendwise_global_context(request):
     """Provides application-wide template variables."""
@@ -14,7 +17,7 @@ def spendwise_global_context(request):
     if request.user.is_authenticated:
         try:
             user_profile = getattr(request.user, 'profile', None)
-        except Exception:
+        except (AttributeError, ObjectDoesNotExist):
             user_profile = None
 
     return {

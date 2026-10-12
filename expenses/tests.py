@@ -3,18 +3,23 @@ Comprehensive automated test suite for SpendWise application.
 Covers authentication, models, services, views, REST APIs, CSV export, validation, and security isolation.
 """
 
-from decimal import Decimal
 from datetime import date, timedelta
-from django.test import TestCase, Client
-from django.contrib.auth.models import User
-from django.urls import reverse
-from django.core.exceptions import ValidationError
-from rest_framework import status
-from rest_framework.test import APIClient
-from rest_framework.authtoken.models import Token
+from decimal import Decimal
 
-from .models import Category, Transaction, Budget, UserProfile, create_default_categories_for_user
-from .services import FinanceService
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.test import Client, TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
+
+from .models import (
+    Budget,
+    Category,
+    Transaction,
+    create_default_categories_for_user,
+)
 
 
 class SpendWiseModelTests(TestCase):

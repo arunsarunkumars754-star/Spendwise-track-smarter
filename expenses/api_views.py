@@ -5,13 +5,15 @@ Provides versioned /api/v1/ endpoints for Transactions, Categories, Budgets, Das
 
 from decimal import Decimal
 from django.http import HttpResponse
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 from .models import Category, Transaction, Budget
 from .serializers import CategorySerializer, TransactionSerializer, BudgetSerializer
@@ -28,7 +30,7 @@ class CustomAuthToken(ObtainAuthToken):
         responses={200: OpenApiTypes.OBJECT}
     )
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
@@ -44,6 +46,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing user-specific categories.
     """
+    queryset = Category.objects.none()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -76,6 +79,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing user transactions (Income and Expense).
     """
+    queryset = Transaction.objects.none()
     serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -107,6 +111,7 @@ class BudgetViewSet(viewsets.ModelViewSet):
     """
     API endpoint for setting and tracking budget thresholds.
     """
+    queryset = Budget.objects.none()
     serializer_class = BudgetSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]

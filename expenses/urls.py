@@ -3,29 +3,30 @@ Web URL Configuration for SpendWise application.
 """
 
 from django.urls import path
+
 from .views import (
-    landing_view,
+    analytics_view,
+    budget_create_view,
+    budget_delete_view,
+    budget_list_view,
+    budget_update_view,
+    category_create_view,
+    category_delete_view,
+    category_list_view,
+    category_update_view,
+    dashboard_view,
     demo_login_view,
-    register_view,
+    export_csv_view,
+    landing_view,
     login_view,
     logout_view,
     profile_view,
-    dashboard_view,
-    transaction_list_view,
-    transaction_create_view,
-    transaction_update_view,
-    transaction_delete_view,
-    category_list_view,
-    category_create_view,
-    category_update_view,
-    category_delete_view,
-    budget_list_view,
-    budget_create_view,
-    budget_update_view,
-    budget_delete_view,
-    analytics_view,
+    register_view,
     reports_view,
-    export_csv_view,
+    transaction_create_view,
+    transaction_delete_view,
+    transaction_list_view,
+    transaction_update_view,
 )
 
 urlpatterns = [

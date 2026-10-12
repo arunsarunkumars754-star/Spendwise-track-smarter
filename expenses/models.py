@@ -28,7 +28,8 @@ class UserProfile(models.Model):
         verbose_name_plural = 'User Profiles'
 
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        user_name = getattr(self.user, 'username', str(self.user))
+        return f"{user_name}'s Profile"
 
 
 class Category(models.Model):
@@ -64,12 +65,14 @@ class Category(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.name} ({self.get_category_type_display()})"
+        type_display = self.get_category_type_display() if hasattr(self, 'get_category_type_display') else self.category_type
+        return f"{self.name} ({type_display})"
 
     @property
     def transaction_count(self):
         """Returns the total number of transactions linked to this category."""
-        return self.transactions.count()
+        txs = getattr(self, 'transactions', None)
+        return txs.count() if txs is not None else 0
 
 
 class Transaction(models.Model):
@@ -219,14 +222,16 @@ class Budget(models.Model):
     def get_remaining_amount(self):
         """Calculates remaining budget allowance."""
         spent = self.get_spent_amount()
-        return self.amount_limit - spent
+        limit = Decimal(str(self.amount_limit)) if self.amount_limit is not None else Decimal('0.00')
+        return limit - spent
 
     def get_percentage_spent(self):
         """Returns spent percentage relative to amount_limit."""
-        if not self.amount_limit or self.amount_limit == Decimal('0.00'):
+        limit = Decimal(str(self.amount_limit)) if self.amount_limit is not None else Decimal('0.00')
+        if not limit or limit == Decimal('0.00'):
             return 0.0
         spent = self.get_spent_amount()
-        ratio = (spent / self.amount_limit) * Decimal('100.0')
+        ratio = (spent / limit) * Decimal('100.0')
         return round(float(ratio), 1)
 
     def get_status(self):
@@ -277,7 +282,8 @@ class RecurringTransaction(models.Model):
         ordering = ['next_due_date']
 
     def __str__(self):
-        return f"{self.title} - {self.get_frequency_display()} (₹{self.amount})"
+        freq_display = self.get_frequency_display() if hasattr(self, 'get_frequency_display') else self.frequency
+        return f"{self.title} - {freq_display} (₹{self.amount})"
 
 
 def create_default_categories_for_user(user):

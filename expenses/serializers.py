@@ -6,6 +6,7 @@ Provides user-scoped serialization, nested representations, and ownership valida
 from decimal import Decimal
 
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .models import Budget, Category, Transaction
 
@@ -124,15 +125,19 @@ class BudgetSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'spent_amount', 'remaining_amount', 'percentage_spent', 'status']
 
+    @extend_schema_field(serializers.FloatField)
     def get_spent_amount(self, obj):
         return float(obj.get_spent_amount())
 
+    @extend_schema_field(serializers.FloatField)
     def get_remaining_amount(self, obj):
         return float(obj.get_remaining_amount())
 
+    @extend_schema_field(serializers.FloatField)
     def get_percentage_spent(self, obj):
         return obj.get_percentage_spent()
 
+    @extend_schema_field(serializers.CharField)
     def get_status(self, obj):
         return obj.get_status()
 

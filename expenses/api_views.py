@@ -137,7 +137,8 @@ class DashboardSummaryAPIView(APIView):
             OpenApiParameter('filter', OpenApiTypes.STR, description='Period filter: this_month, last_month, last_3_months, this_year, custom, all_time'),
             OpenApiParameter('start_date', OpenApiTypes.DATE, description='Custom start date (YYYY-MM-DD)'),
             OpenApiParameter('end_date', OpenApiTypes.DATE, description='Custom end date (YYYY-MM-DD)'),
-        ]
+        ],
+        responses={200: OpenApiTypes.OBJECT}
     )
     def get(self, request, *args, **kwargs):
         period_filter = request.query_params.get('filter', 'this_month')
@@ -179,7 +180,8 @@ class AnalyticsAPIView(APIView):
             OpenApiParameter('filter', OpenApiTypes.STR, description='Period filter: this_month, last_month, last_3_months, this_year, custom, all_time'),
             OpenApiParameter('start_date', OpenApiTypes.DATE, description='Custom start date (YYYY-MM-DD)'),
             OpenApiParameter('end_date', OpenApiTypes.DATE, description='Custom end date (YYYY-MM-DD)'),
-        ]
+        ],
+        responses={200: OpenApiTypes.OBJECT}
     )
     def get(self, request, *args, **kwargs):
         period_filter = request.query_params.get('filter', 'this_month')
@@ -210,7 +212,8 @@ class ExportTransactionsAPIView(APIView):
             OpenApiParameter('payment_method', OpenApiTypes.STR, description='Payment method'),
             OpenApiParameter('start_date', OpenApiTypes.DATE, description='Start date YYYY-MM-DD'),
             OpenApiParameter('end_date', OpenApiTypes.DATE, description='End date YYYY-MM-DD'),
-        ]
+        ],
+        responses={200: OpenApiTypes.BINARY}
     )
     def get(self, request, *args, **kwargs):
         tx_query = Transaction.objects.filter(user=request.user).select_related('category')

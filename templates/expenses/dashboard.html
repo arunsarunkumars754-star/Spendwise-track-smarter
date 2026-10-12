@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Overview{% endblock %}
+{% block page_heading %}Financial Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Top Filter & Action Bar -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Financial Overview</h4>
+            <p class="text-muted small mb-0">Period: <strong>{{ summary.period_start|date:"d M Y" }}</strong> to <strong>{{ summary.period_end|date:"d M Y" }}</strong></p>
+        </div>
+
+        <!-- Period Filter Selector Form -->
+        <form method="get" class="d-flex flex-wrap align-items-center gap-2">
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="?period=this_month" class="btn btn-outline-secondary {% if period_filter == 'this_month' %}active fw-bold{% endif %}">This Month</a>
+                <a href="?period=last_month" class="btn btn-outline-secondary {% if period_filter == 'last_month' %}active fw-bold{% endif %}">Last Month</a>
+                <a href="?period=last_3_months" class="btn btn-outline-secondary {% if period_filter == 'last_3_months' %}active fw-bold{% endif %}">3 Months</a>
+                <a href="?period=this_year" class="btn btn-outline-secondary {% if period_filter == 'this_year' %}active fw-bold{% endif %}">This Year</a>
+                <button type="button" class="btn btn-outline-secondary {% if period_filter == 'custom' %}active fw-bold{% endif %}" data-bs-toggle="collapse" data-bs-target="#customDateFilter">Custom</button>
+            </div>
+
+            <!-- Add Transactions Buttons -->
+            <div class="dropdown">
+                <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-plus-lg me-1"></i> New Entry
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <li><a class="dropdown-item py-2 small" href="{% url 'transaction-create' %}?type=expense"><i class="bi bi-arrow-up-right text-danger me-2"></i>Record Expense</a></li>
+                    <li><a class="dropdown-item py-2 small" href="{% url 'transaction-create' %}?type=income"><i class="bi bi-arrow-down-left text-success me-2"></i>Record Income</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item py-2 small" href="{% url 'budget-create' %}"><i class="bi bi-pie-chart text-primary me-2"></i>Set Budget Target</a></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+
+    <!-- Collapsible Custom Date Range Picker -->
+    <div class="collapse mb-4 {% if period_filter == 'custom' %}show{% endif %}" id="customDateFilter">
+        <div class="card p-3 shadow-sm border">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="period" value="custom">
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">Start Date</label>
+                    <input type="date" name="start_date" class="form-control form-control-sm" value="{{ custom_start }}" required>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">End Date</label>
+                    <input type="date" name="end_date" class="form-control form-control-sm" value="{{ custom_end }}" required>
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Key Performance Indicator (KPI) Metric Cards -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Total Income in Period -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Period Income</span>
+                    <div class="metric-icon-box" style="background-color: var(--success-light); color: var(--success);">
+                        <i class="bi bi-arrow-down-left"></i>
+                    </div>
+                </div>
+                <div class="metric-value text-success">
+                    ₹{{ summary.period_income|floatformat:2 }}
+                </div>
+                <div class="metric-footer">
+                    <i class="bi bi-calendar3"></i> In selected timeframe
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Total Expenses in Period -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Period Expenses</span>
+                    <div class="metric-icon-box" style="background-color: var(--danger-light); color: var(--danger);">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+                </div>
+                <div class="metric-value text-danger">
+                    ₹{{ summary.period_expense|floatformat:2 }}
+                </div>
+                <div class="metric-footer">
+                    {% if summary.expense_diff_percentage > 0 %}
+                        <span class="text-danger fw-semibold"><i class="bi bi-arrow-up"></i> +{{ summary.expense_diff_percentage }}%</span> vs last month
+                    {% elif summary.expense_diff_percentage < 0 %}
+                        <span class="text-success fw-semibold"><i class="bi bi-arrow-down"></i> {{ summary.expense_diff_percentage }}%</span> vs last month
+                    {% else %}
+                        <span>0% vs last month</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. All-Time Net Balance -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">All-Time Balance</span>
+                    <div class="metric-icon-box" style="background-color: var(--primary-light); color: var(--primary);">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                </div>
+                <div class="metric-value {% if summary.all_time_balance >= 0 %}text-primary{% else %}text-danger{% endif %}">
+                    ₹{{ summary.all_time_balance|floatformat:2 }}
+                </div>
+                <div class="metric-footer">
+                    <span class="badge {% if summary.savings_rate >= 20 %}bg-success-subtle text-success{% else %}bg-warning-subtle text-warning{% endif %}">
+                        Savings Rate: {{ summary.savings_rate }}%
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Budget Utilization -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Budget Remaining</span>
+                    <div class="metric-icon-box" style="background-color: var(--info-light); color: var(--info);">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+                </div>
+                <div class="metric-value text-info">
+                    {% if summary.budget_count > 0 %}
+                        ₹{{ summary.remaining_total_budget|floatformat:2 }}
+                    {% else %}
+                        <span class="fs-4 text-muted">No Active Budgets</span>
+                    {% endif %}
+                </div>
+                <div class="metric-footer">
+                    {% if summary.budget_count > 0 %}
+                        <span>{{ summary.budget_count }} active budget targets</span>
+                    {% else %}
+                        <a href="{% url 'budget-create' %}" class="small text-primary"><i class="bi bi-plus-circle"></i> Create budget</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+        <!-- Monthly Spending & Income Trend -->
+        <div class="col-12 col-lg-8">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-bar-chart-line me-2 text-primary"></i>Income vs. Expenses (Past 6 Months)</span>
+                    <a href="{% url 'analytics' %}" class="small text-muted">Detailed view <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="card-body">
+                    <div style="height: 280px; position: relative;">
+                        <canvas id="monthlyComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Expense Breakdown (Doughnut) -->
+        <div class="col-12 col-lg-4">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-pie-chart me-2 text-primary"></i>Expense by Category</span>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    {% if chart_data.category_breakdown.labels %}
+                    <div style="height: 240px; width: 100%; position: relative;">
+                        <canvas id="categoryDoughnutChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <i class="bi bi-pie-chart text-muted display-6"></i>
+                        <p class="small text-muted mt-2 mb-0">No expense transactions recorded in this period.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Budgets & Recent Transactions Row -->
+    <div class="row g-3">
+        <!-- Active Budget Utilization Indicators -->
+        <div class="col-12 col-lg-5">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-shield-check me-2 text-primary"></i>Budget Utilization</span>
+                    <a href="{% url 'budget-list' %}" class="small text-muted">View all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="card-body">
+                    {% if summary.active_budgets %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for b in summary.active_budgets %}
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold small">
+                                        <span class="category-dot me-1" style="background-color: {{ b.category_color }};"></span>
+                                        {{ b.name }} ({{ b.category_name }})
+                                    </span>
+                                    <span class="small {% if b.status == 'exceeded' %}text-danger fw-bold{% elif b.status == 'warning' %}text-warning fw-bold{% else %}text-muted{% endif %}">
+                                        ₹{{ b.spent|floatformat:2 }} / ₹{{ b.limit|floatformat:2 }} ({{ b.percentage }}%)
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar {% if b.status == 'exceeded' %}progress-bar-danger{% elif b.status == 'warning' %}progress-bar-warning{% else %}progress-bar-normal{% endif %}"
+                                         role="progressbar"
+                                         style="width: {% if b.percentage > 100 %}100{% else %}{{ b.percentage }}{% endif %}%;"
+                                         aria-valuenow="{{ b.percentage }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                                {% if b.status == 'exceeded' %}
+                                    <small class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Budget limit exceeded!</small>
+                                {% elif b.status == 'warning' %}
+                                    <small class="text-warning"><i class="bi bi-exclamation-circle-fill"></i> Approaching limit (&ge;80%)</small>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state py-4">
+                            <i class="bi bi-check-circle text-muted display-6"></i>
+                            <p class="small text-muted mt-2 mb-2">No active budgets for this timeframe.</p>
+                            <a href="{% url 'budget-create' %}" class="btn btn-outline-primary btn-sm">Set a Budget</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions Table -->
+        <div class="col-12 col-lg-7">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-clock-history me-2 text-primary"></i>Recent Transactions</span>
+                    <a href="{% url 'transaction-list' %}" class="small text-muted">View all <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="card-body p-0 table-responsive">
+                    {% if recent_transactions %}
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Transaction</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Payment</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tx in recent_transactions %}
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold text-truncate" style="max-width: 180px;">{{ tx.title }}</div>
+                                    {% if tx.reference_number %}<small class="text-muted">{{ tx.reference_number }}</small>{% endif %}
+                                </td>
+                                <td>
+                                    <span class="category-pill">
+                                        <span class="category-dot" style="background-color: {{ tx.category.color }};"></span>
+                                        <i class="bi {{ tx.category.icon }} me-1"></i> {{ tx.category.name }}
+                                    </span>
+                                </td>
+                                <td class="text-muted small">{{ tx.transaction_date|date:"d M Y" }}</td>
+                                <td>
+                                    <span class="badge bg-secondary-subtle text-secondary small">{{ tx.get_payment_method_display }}</span>
+                                </td>
+                                <td class="text-end fw-bold {% if tx.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                                    {% if tx.transaction_type == 'income' %}+{% else %}-{% endif %}₹{{ tx.amount|floatformat:2 }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <i class="bi bi-receipt text-muted display-6"></i>
+                        <p class="small text-muted mt-2 mb-2">No transactions recorded yet.</p>
+                        <a href="{% url 'transaction-create' %}" class="btn btn-primary btn-sm">Add First Transaction</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    const gridColor = isDark ? '#1f2937' : '#f1f5f9';
+    const textColor = isDark ? '#9ca3af' : '#64748b';
+
+    // 1. Monthly Comparison Chart (Bar)
+    const monthlyCtx = document.getElementById('monthlyComparisonChart');
+    if (monthlyCtx) {
+        const monthlyLabels = {{ chart_data.monthly_comparison.labels|safe }};
+        const incomeData = {{ chart_data.monthly_comparison.income|safe }};
+        const expenseData = {{ chart_data.monthly_comparison.expense|safe }};
+
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: monthlyLabels,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: incomeData,
+                        backgroundColor: '#10b981',
+                        borderRadius: 6,
+                    },
+                    {
+                        label: 'Expenses',
+                        data: expenseData,
+                        backgroundColor: '#ef4444',
+                        borderRadius: 6,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: textColor, font: { family: 'Plus Jakarta Sans', size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ₹' + context.raw.toLocaleString('en-IN', {minimumFractionDigits: 2});
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: textColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: {
+                            color: textColor,
+                            callback: function(val) { return '₹' + val.toLocaleString('en-IN'); }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Category Expense Breakdown (Doughnut)
+    const catCtx = document.getElementById('categoryDoughnutChart');
+    if (catCtx) {
+        const catLabels = {{ chart_data.category_breakdown.labels|safe }};
+        const catData = {{ chart_data.category_breakdown.data|safe }};
+        const catColors = {{ chart_data.category_breakdown.colors|safe }};
+
+        if (catData.length > 0) {
+            new Chart(catCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        data: catData,
+                        backgroundColor: catColors.length ? catColors : ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#06b6d4'],
+                        borderWidth: 2,
+                        borderColor: isDark ? '#111827' : '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                boxWidth: 12,
+                                font: { family: 'Plus Jakarta Sans', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ₹' + context.raw.toLocaleString('en-IN', {minimumFractionDigits: 2});
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

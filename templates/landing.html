@@ -1,0 +1,1288 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SpendWise — Intelligent Personal Finance & Expense Analytics Platform{% endblock %}
+
+{% block landing_content %}
+<!-- ========================================================================= -->
+<!-- Top Public Navbar -->
+<!-- ========================================================================= -->
+<header class="landing-header sticky-top">
+    <div class="container d-flex align-items-center justify-content-between py-3">
+        <!-- Logo Brand -->
+        <a href="{% url 'landing' %}" class="d-flex align-items-center gap-2 text-decoration-none">
+            <div class="brand-icon-box shadow-sm" style="width: 40px; height: 40px; font-size: 1.25rem;">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <div>
+                <span class="fs-4 fw-extrabold tracking-tight brand-gradient-text">SpendWise</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill ms-2 d-none d-sm-inline-block small">v2.0 LTS</span>
+            </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="d-none d-lg-flex align-items-center gap-4">
+            <a href="#features" class="landing-nav-link">Features</a>
+            <a href="#preview" class="landing-nav-link">Live Preview</a>
+            <a href="#calculator" class="landing-nav-link">Savings Calculator</a>
+            <a href="#how-it-works" class="landing-nav-link">How It Works</a>
+            <a href="#pricing" class="landing-nav-link">Pricing</a>
+            <a href="#faq" class="landing-nav-link">FAQ</a>
+            <a href="{% url 'swagger-ui' %}" target="_blank" class="landing-nav-link d-flex align-items-center gap-1">
+                <i class="bi bi-code-slash text-primary"></i> API Docs
+            </a>
+        </nav>
+
+        <!-- Right Action Controls -->
+        <div class="d-flex align-items-center gap-2">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle-btn" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" type="button" title="Toggle Theme">
+                <i class="bi bi-moon-stars-fill"></i>
+            </button>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3 py-2 fw-semibold shadow-sm">
+                <i class="bi bi-speedometer2"></i>
+                <span>Open Dashboard</span>
+            </a>
+            {% else %}
+            <!-- Fast Demo Sandbox Button -->
+            <a href="{% url 'demo-login' %}" class="btn btn-outline-primary btn-sm d-none d-sm-flex align-items-center gap-1 px-3 py-2 fw-semibold" title="Instant Sandbox Test Drive">
+                <i class="bi bi-lightning-charge-fill text-warning"></i>
+                <span>1-Click Demo</span>
+            </a>
+
+            <a href="{% url 'login' %}" class="btn btn-ghost btn-sm px-3 py-2 fw-semibold">Sign In</a>
+
+            <a href="{% url 'register' %}" class="btn btn-primary btn-sm px-3 py-2 fw-semibold shadow-sm">
+                Get Started <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+
+<!-- ========================================================================= -->
+<!-- Hero Section -->
+<!-- ========================================================================= -->
+<section class="hero-section py-5 position-relative overflow-hidden">
+    <!-- Glow Backdrop Effects -->
+    <div class="hero-glow-blob hero-glow-1"></div>
+    <div class="hero-glow-blob hero-glow-2"></div>
+
+    <div class="container position-relative py-lg-4 text-center">
+        <!-- New Feature Pill -->
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-4 rounded-pill hero-badge border shadow-sm">
+            <span class="badge bg-primary rounded-pill px-2 py-1 small">NEW</span>
+            <span class="small fw-semibold text-secondary">Real-Time Cashflow Intelligence &amp; Multi-Tenant Isolation</span>
+            <i class="bi bi-arrow-right text-primary small"></i>
+        </div>
+
+        <!-- Main Headline -->
+        <h1 class="hero-title display-4 fw-extrabold mb-3 mx-auto" style="max-width: 920px; line-height: 1.15;">
+            Master Your Cash Flow.<br>
+            <span class="hero-gradient-text">Eliminate Financial Chaos.</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="hero-subtitle lead text-muted mx-auto mb-4" style="max-width: 720px;">
+            A full-stack, enterprise-grade personal finance application engineered for individuals, creators, and freelancers. Track income, enforce automated budget guardrails, analyze trends, and export audit-ready records.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-5">
+            <a href="{% url 'demo-login' %}" class="btn btn-primary btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2 shadow-lg hero-cta-btn">
+                <i class="bi bi-lightning-charge-fill text-warning"></i>
+                <span class="fw-bold">Explore 1-Click Demo Sandbox</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+            <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2 hero-secondary-btn">
+                <i class="bi bi-shield-lock"></i>
+                <span>Create Free Account</span>
+            </a>
+
+            <a href="{% url 'swagger-ui' %}" target="_blank" class="btn btn-ghost btn-lg px-3 py-3 d-flex align-items-center gap-2 text-muted">
+                <i class="bi bi-file-earmark-code"></i>
+                <span>Swagger REST Docs</span>
+            </a>
+        </div>
+
+        <!-- Social Proof Numbers Bar -->
+        <div class="row g-3 justify-content-center align-items-center text-center mt-3 pt-3 border-top border-secondary-subtle mx-auto" style="max-width: 860px;">
+            <div class="col-6 col-md-3">
+                <div class="fs-4 fw-extrabold text-primary">₹12.4 Cr+</div>
+                <div class="small text-muted">Volume Monitored</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fs-4 fw-extrabold text-success">35,000+</div>
+                <div class="small text-muted">Transactions Logged</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fs-4 fw-extrabold text-warning">80% &amp; 100%</div>
+                <div class="small text-muted">Auto Budget Alerts</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fs-4 fw-extrabold text-info">100%</div>
+                <div class="small text-muted">Data Isolation (Zero-Leak)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Live Interactive Product UI Preview Showcase -->
+<!-- ========================================================================= -->
+<section id="preview" class="py-5 bg-body-tertiary border-top border-bottom">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Live Experience</span>
+            <h2 class="fw-bold mt-1">Peek Inside The Application</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Experience the clean ergonomics and responsive widgets built into the SpendWise client workspace.
+            </p>
+        </div>
+
+        <!-- Interactive Mockup Container -->
+        <div class="card shadow-lg border rounded-4 overflow-hidden preview-mockup-window">
+            <!-- Window Titlebar -->
+            <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom bg-body-secondary">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mockup-dot bg-danger"></span>
+                    <span class="mockup-dot bg-warning"></span>
+                    <span class="mockup-dot bg-success"></span>
+                    <span class="small text-muted ms-2 fw-semibold d-none d-sm-inline">SpendWise Financial Intelligence • Dashboard Workspace</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Preview Tab Switcher -->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active preview-tab-btn" data-tab="tab-overview">Overview</button>
+                        <button type="button" class="btn btn-outline-secondary preview-tab-btn" data-tab="tab-cashflow">Cash Flow</button>
+                        <button type="button" class="btn btn-outline-secondary preview-tab-btn" data-tab="tab-budgets">Budgets</button>
+                        <button type="button" class="btn btn-outline-secondary preview-tab-btn" data-tab="tab-txs">Recent Activity</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Body Content -->
+            <div class="p-3 p-md-4 bg-body">
+                <!-- Tab 1: Overview KPIs & Charts -->
+                <div id="tab-overview" class="preview-tab-pane active">
+                    <!-- KPI Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="metric-card border shadow-none p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small text-muted fw-semibold">Monthly Income</span>
+                                    <span class="badge bg-success-subtle text-success"><i class="bi bi-arrow-down-left"></i> +18.4%</span>
+                                </div>
+                                <h4 class="fw-bold text-success mb-1">₹1,18,500.00</h4>
+                                <div class="small text-muted"><i class="bi bi-calendar-check me-1"></i> Current billing cycle</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="metric-card border shadow-none p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small text-muted fw-semibold">Monthly Expenses</span>
+                                    <span class="badge bg-danger-subtle text-danger"><i class="bi bi-arrow-up-right"></i> Controlled</span>
+                                </div>
+                                <h4 class="fw-bold text-danger mb-1">₹41,200.00</h4>
+                                <div class="small text-muted"><i class="bi bi-shield-check me-1"></i> Under 60% of income</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="metric-card border shadow-none p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small text-muted fw-semibold">Net Savings Rate</span>
+                                    <span class="badge bg-primary-subtle text-primary">High Tier</span>
+                                </div>
+                                <h4 class="fw-bold text-primary mb-1">₹77,300.00</h4>
+                                <div class="small text-muted"><i class="bi bi-graph-up-arrow me-1"></i> 65.2% savings ratio</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="metric-card border shadow-none p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small text-muted fw-semibold">Active Budgets</span>
+                                    <span class="badge bg-success-subtle text-success">Healthy</span>
+                                </div>
+                                <h4 class="fw-bold text-info mb-1">4 of 4 On Track</h4>
+                                <div class="small text-muted"><i class="bi bi-check2-circle me-1"></i> Zero overspending</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split Chart & Quick Transactions Mockup -->
+                    <div class="row g-3">
+                        <div class="col-lg-7">
+                            <div class="card p-3 border shadow-none">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold mb-0">6-Month Cashflow Trajectory</h6>
+                                    <span class="badge bg-body-secondary text-secondary">Dynamic ORM</span>
+                                </div>
+                                <div class="mockup-chart-bars d-flex align-items-end justify-content-between gap-2 py-3 px-2 border-bottom" style="height: 180px;">
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 70%; width: 14px;" title="Income: ₹85k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 38%; width: 14px;" title="Expense: ₹36k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2" style="font-size: 0.75rem;">May</div>
+                                    </div>
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 78%; width: 14px;" title="Income: ₹92k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 42%; width: 14px;" title="Expense: ₹40k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2" style="font-size: 0.75rem;">Jun</div>
+                                    </div>
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 85%; width: 14px;" title="Income: ₹98k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 40%; width: 14px;" title="Expense: ₹38k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2" style="font-size: 0.75rem;">Jul</div>
+                                    </div>
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 82%; width: 14px;" title="Income: ₹95k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 45%; width: 14px;" title="Expense: ₹44k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2" style="font-size: 0.75rem;">Aug</div>
+                                    </div>
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 90%; width: 14px;" title="Income: ₹105k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 39%; width: 14px;" title="Expense: ₹37k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2" style="font-size: 0.75rem;">Sep</div>
+                                    </div>
+                                    <div class="mockup-bar-group text-center flex-fill">
+                                        <div class="d-flex gap-1 justify-content-center align-items-end" style="height: 130px;">
+                                            <div class="bg-success rounded-top" style="height: 100%; width: 14px;" title="Income: ₹118k"></div>
+                                            <div class="bg-danger rounded-top" style="height: 43%; width: 14px;" title="Expense: ₹41k"></div>
+                                        </div>
+                                        <div class="small text-muted mt-2 fw-bold text-primary" style="font-size: 0.75rem;">Oct (Now)</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center gap-4 mt-2 small text-muted">
+                                    <span><span class="d-inline-block rounded-circle bg-success me-1" style="width: 8px; height: 8px;"></span> Inflow</span>
+                                    <span><span class="d-inline-block rounded-circle bg-danger me-1" style="width: 8px; height: 8px;"></span> Outflow</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="card p-3 border shadow-none h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold mb-0">Expense Distribution</h6>
+                                    <span class="badge bg-body-secondary text-secondary">Categorized</span>
+                                </div>
+                                <div class="d-flex flex-column gap-3 justify-content-center h-100">
+                                    <div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="fw-semibold"><i class="bi bi-house-door text-primary me-1"></i> Housing &amp; Rent</span>
+                                            <span>₹22,000 (53.4%)</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-primary" style="width: 53.4%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="fw-semibold"><i class="bi bi-basket text-success me-1"></i> Groceries &amp; Food</span>
+                                            <span>₹8,500 (20.6%)</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 20.6%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="fw-semibold"><i class="bi bi-lightning-charge text-warning me-1"></i> Utilities &amp; Wifi</span>
+                                            <span>₹4,200 (10.2%)</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 10.2%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="fw-semibold"><i class="bi bi-film text-info me-1"></i> Entertainment &amp; Leisure</span>
+                                            <span>₹3,500 (8.5%)</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-info" style="width: 8.5%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Cashflow Breakdown -->
+                <div id="tab-cashflow" class="preview-tab-pane d-none">
+                    <div class="alert alert-info py-2 small mb-3">
+                        <i class="bi bi-info-circle me-1"></i> Real-time calculation aggregates all recorded UPI, debit card, and cash inflows vs outflows.
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Month</th>
+                                    <th>Total Income</th>
+                                    <th>Total Outflow</th>
+                                    <th>Net Balance</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-semibold">October 2026</td>
+                                    <td class="text-success fw-bold">+₹1,18,500.00</td>
+                                    <td class="text-danger fw-bold">-₹41,200.00</td>
+                                    <td class="text-primary fw-bold">+₹77,300.00</td>
+                                    <td><span class="badge bg-success-subtle text-success">Surplus</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">September 2026</td>
+                                    <td class="text-success fw-bold">+₹1,05,000.00</td>
+                                    <td class="text-danger fw-bold">-₹37,000.00</td>
+                                    <td class="text-primary fw-bold">+₹68,000.00</td>
+                                    <td><span class="badge bg-success-subtle text-success">Surplus</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">August 2026</td>
+                                    <td class="text-success fw-bold">+₹95,000.00</td>
+                                    <td class="text-danger fw-bold">-₹44,000.00</td>
+                                    <td class="text-primary fw-bold">+₹51,000.00</td>
+                                    <td><span class="badge bg-success-subtle text-success">Surplus</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Budgets Guardrails -->
+                <div id="tab-budgets" class="preview-tab-pane d-none">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card p-3 border shadow-none">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0">Monthly Dining &amp; Cafe</h6>
+                                    <span class="badge bg-success-subtle text-success">42% Used</span>
+                                </div>
+                                <div class="small text-muted mb-2">₹2,100 spent of ₹5,000 monthly limit</div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" style="width: 42%;"></div>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted mt-2">
+                                    <span>Remaining: ₹2,900</span>
+                                    <span>Guardrail: Safe</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 border shadow-none">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0">Shopping &amp; Electronics</h6>
+                                    <span class="badge bg-warning-subtle text-warning">84% Used (Alert)</span>
+                                </div>
+                                <div class="small text-muted mb-2">₹8,400 spent of ₹10,000 monthly limit</div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" style="width: 84%;"></div>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted mt-2">
+                                    <span>Remaining: ₹1,600</span>
+                                    <span class="text-warning fw-semibold"><i class="bi bi-exclamation-triangle"></i> Near 80% Cap</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Recent Activity -->
+                <div id="tab-txs" class="preview-tab-pane d-none">
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Transaction</th>
+                                    <th>Category</th>
+                                    <th>Method</th>
+                                    <th>Date</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">Freelance AI Consulting Milestone</div>
+                                        <span class="text-muted small">Client Project #409</span>
+                                    </td>
+                                    <td><span class="badge bg-success-subtle text-success">Salary &amp; Income</span></td>
+                                    <td><span class="badge bg-body-secondary text-secondary">Bank Transfer</span></td>
+                                    <td class="small text-muted">12 Oct 2026</td>
+                                    <td class="text-end text-success fw-bold">+₹24,500.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">Apartment Rent &amp; Maintenance</div>
+                                        <span class="text-muted small">Fixed Monthly Living</span>
+                                    </td>
+                                    <td><span class="badge bg-primary-subtle text-primary">Housing &amp; Rent</span></td>
+                                    <td><span class="badge bg-body-secondary text-secondary">UPI / GPay</span></td>
+                                    <td class="small text-muted">08 Oct 2026</td>
+                                    <td class="text-end text-danger fw-bold">-₹22,000.00</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">Supermarket Monthly Grocery Basket</div>
+                                        <span class="text-muted small">Household Essentials</span>
+                                    </td>
+                                    <td><span class="badge bg-warning-subtle text-warning">Groceries</span></td>
+                                    <td><span class="badge bg-body-secondary text-secondary">Debit Card</span></td>
+                                    <td class="small text-muted">05 Oct 2026</td>
+                                    <td class="text-end text-danger fw-bold">-₹4,850.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mockup Card Footer Bar -->
+            <div class="px-4 py-3 bg-body-secondary border-top d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                <span class="small text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i> Data strictly isolated via Django ORM <code>request.user</code> tenancy filter.
+                </span>
+                <a href="{% url 'demo-login' %}" class="btn btn-primary btn-sm px-3 fw-semibold">
+                    Launch Interactive Sandbox <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Interactive Savings & Financial Health Calculator -->
+<!-- ========================================================================= -->
+<section id="calculator" class="py-5">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Financial Planning Simulator</span>
+            <h2 class="fw-bold mt-1">Simulate Your Wealth &amp; Savings Growth</h2>
+            <p class="text-muted mx-auto" style="max-width: 620px;">
+                Adjust your monthly earnings and expense habits to see your projected annual wealth accumulation, emergency runway, and optimal 50/30/20 distribution.
+            </p>
+        </div>
+
+        <div class="row g-4 align-items-center">
+            <!-- Left: Sliders Form Controls -->
+            <div class="col-lg-6">
+                <div class="card p-4 border shadow-sm rounded-4">
+                    <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-sliders2 text-primary"></i>
+                        <span>Cashflow Parameters</span>
+                    </h5>
+
+                    <!-- Slider 1: Monthly Income -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold mb-0">Monthly Inflow / Income</label>
+                            <span class="badge bg-primary-subtle text-primary fs-6 fw-bold" id="calc-income-val">₹80,000</span>
+                        </div>
+                        <input type="range" class="form-range" id="calc-income" min="20000" max="400000" step="5000" value="80000">
+                        <div class="d-flex justify-content-between text-muted small" style="font-size: 0.75rem;">
+                            <span>₹20,000</span>
+                            <span>₹2,00,000</span>
+                            <span>₹4,00,000</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Monthly Expenses -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold mb-0">Estimated Monthly Outflows</label>
+                            <span class="badge bg-danger-subtle text-danger fs-6 fw-bold" id="calc-expense-val">₹42,000</span>
+                        </div>
+                        <input type="range" class="form-range" id="calc-expense" min="10000" max="300000" step="2000" value="42000">
+                        <div class="d-flex justify-content-between text-muted small" style="font-size: 0.75rem;">
+                            <span>₹10,000</span>
+                            <span>₹1,50,000</span>
+                            <span>₹3,00,000</span>
+                        </div>
+                    </div>
+
+                    <!-- Slider 3: Target Investment Rate -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold mb-0">Compounded Annual Return Rate (%)</label>
+                            <span class="badge bg-success-subtle text-success fs-6 fw-bold" id="calc-rate-val">10.0%</span>
+                        </div>
+                        <input type="range" class="form-range" id="calc-rate" min="5" max="18" step="0.5" value="10">
+                        <div class="d-flex justify-content-between text-muted small" style="font-size: 0.75rem;">
+                            <span>5% (Debt/FD)</span>
+                            <span>10% (Index/Mutual Funds)</span>
+                            <span>18% (High Growth)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Dynamic Live Output Result Cards -->
+            <div class="col-lg-6">
+                <div class="card p-4 border shadow-sm rounded-4 h-100" style="background: linear-gradient(145deg, var(--bg-surface) 0%, var(--primary-light) 100%);">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-graph-up-arrow text-success"></i>
+                        <span>Projected Wealth Trajectory</span>
+                    </h5>
+
+                    <!-- Primary Metric: Monthly Surplus -->
+                    <div class="p-3 bg-body rounded-3 border mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="small text-muted">Monthly Disposable Surplus</span>
+                                <h3 class="fw-extrabold text-success mb-0" id="calc-monthly-surplus">₹38,000</h3>
+                            </div>
+                            <div class="metric-icon-box" style="background: var(--success-light); color: var(--success);">
+                                <i class="bi bi-wallet-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2-Grid Metrics: 1-Year & 5-Year Projections -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-body rounded-3 border">
+                                <span class="small text-muted d-block mb-1">12-Month Net Savings</span>
+                                <h4 class="fw-bold text-primary mb-0" id="calc-1yr-savings">₹4,56,000</h4>
+                                <small class="text-muted" style="font-size: 0.75rem;">Direct cash accumulation</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-body rounded-3 border">
+                                <span class="small text-muted d-block mb-1">5-Year Compounded SIP</span>
+                                <h4 class="fw-bold text-success mb-0" id="calc-5yr-wealth">₹29,42,800</h4>
+                                <small class="text-muted" style="font-size: 0.75rem;">Compound interest return</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Runway -->
+                    <div class="p-3 bg-body rounded-3 border mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small fw-semibold">Emergency Fund Safety Runway</span>
+                            <span class="fw-bold text-info" id="calc-runway">10.8 Months</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" id="calc-runway-bar" style="width: 85%;"></div>
+                        </div>
+                        <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                            Financial experts recommend maintaining at least 6 months of living expenses.
+                        </div>
+                    </div>
+
+                    <!-- 50/30/20 Rule Breakdown Indicator -->
+                    <div class="p-3 bg-body rounded-3 border">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small fw-bold">SpendWise 50/30/20 Rule Assessment</span>
+                            <span class="badge bg-success" id="calc-verdict">Optimal Health</span>
+                        </div>
+                        <div class="progress" style="height: 12px;">
+                            <div class="progress-bar bg-primary" id="calc-bar-needs" style="width: 52%;" title="Needs"></div>
+                            <div class="progress-bar bg-warning" id="calc-bar-wants" style="width: 25%;" title="Wants"></div>
+                            <div class="progress-bar bg-success" id="calc-bar-savings" style="width: 23%;" title="Savings"></div>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small mt-2" style="font-size: 0.72rem;">
+                            <span><strong class="text-primary">Needs</strong> (Target ≤50%)</span>
+                            <span><strong class="text-warning">Wants</strong> (Target ≤30%)</span>
+                            <span><strong class="text-success">Savings</strong> (Target ≥20%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Core Feature Highlights -->
+<!-- ========================================================================= -->
+<section id="features" class="py-5 bg-body-tertiary border-top border-bottom">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Comprehensive Features</span>
+            <h2 class="fw-bold mt-1">Engineered for Precision &amp; Peace of Mind</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Everything you need to regain clarity over personal and freelance finances in one intuitive suite.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-primary-subtle text-primary mb-3">
+                        <i class="bi bi-tags-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Custom Categorization</h5>
+                    <p class="text-muted small mb-3">
+                        Auto-seeded with 16 realistic lifestyle categories. Create custom tags with hex color codes and icon selectors for seamless expense tracking.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Unique constraint per user</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Protected against accidental cascade delete</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-warning-subtle text-warning mb-3">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Intelligent Budget Guardrails</h5>
+                    <p class="text-muted small mb-3">
+                        Set monthly or annual limits. Automatic warning banners at 80% threshold and prominent danger alerts when caps are exceeded.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Real-time percentage calculation</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Dynamic color-coded progress bars</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-success-subtle text-success mb-3">
+                        <i class="bi bi-credit-card-2-front-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Multi-Channel Inflows &amp; Outflows</h5>
+                    <p class="text-muted small mb-3">
+                        Log transactions across UPI (PhonePe, GPay, Paytm), Debit Cards, Credit Cards, Netbanking, and Cash with decimal precision.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Search query and method filter</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Reference number tracking for audit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-info-subtle text-info mb-3">
+                        <i class="bi bi-pie-chart-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Visual Analytics &amp; Reports</h5>
+                    <p class="text-muted small mb-3">
+                        Responsive Chart.js visuals featuring 6-month cashflow curves, daily spending bars, and category allocation doughnuts.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Dark mode adaptive chart palettes</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Timeframe toggles (Month, 3M, Year)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-danger-subtle text-danger mb-3">
+                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Secure CSV Export</h5>
+                    <p class="text-muted small mb-3">
+                        Export your filtered financial activity with one click. Built with defense against CSV formula injection attacks for spreadsheet safety.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Excel and Google Sheets compatible</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Sanitized against formula injection</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 p-4 border shadow-sm rounded-4 feature-card">
+                    <div class="feature-icon-box bg-purple-subtle text-purple mb-3" style="background: rgba(147, 51, 234, 0.15); color: #9333ea;">
+                        <i class="bi bi-terminal-fill"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">RESTful API &amp; Swagger UI</h5>
+                    <p class="text-muted small mb-3">
+                        Complete Django REST Framework API under <code>/api/v1/</code> with Token auth and interactive Swagger OpenAPI 3.0 documentation.
+                    </p>
+                    <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Interactive test console at <code>/api/docs/</code></li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Ready for mobile apps &amp; integrations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- How It Works Section -->
+<!-- ========================================================================= -->
+<section id="how-it-works" class="py-5">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Simple Workflow</span>
+            <h2 class="fw-bold mt-1">Get Started in Under 60 Seconds</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                SpendWise gets out of your way so you can focus on building sustainable wealth.
+            </p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border bg-body h-100 shadow-sm position-relative">
+                    <div class="workflow-step-badge mb-3">1</div>
+                    <h5 class="fw-bold mb-2">Launch or Register</h5>
+                    <p class="text-muted small mb-0">
+                        Create your free account or click the 1-Click Demo Sandbox to test drive all pre-populated analytics instantly without filling forms.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border bg-body h-100 shadow-sm position-relative">
+                    <div class="workflow-step-badge mb-3">2</div>
+                    <h5 class="fw-bold mb-2">Log Daily Entries</h5>
+                    <p class="text-muted small mb-0">
+                        Add UPI expenses, card charges, or freelance income with auto-filtered category suggestions and payment method tags.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border bg-body h-100 shadow-sm position-relative">
+                    <div class="workflow-step-badge mb-3">3</div>
+                    <h5 class="fw-bold mb-2">Achieve Financial Goals</h5>
+                    <p class="text-muted small mb-0">
+                        Review interactive cash flow trends, monitor automatic 80% budget alerts, and export clean reports for your tax filings.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Testimonials & Reviews -->
+<!-- ========================================================================= -->
+<section class="py-5 bg-body-tertiary border-top border-bottom">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Social Proof</span>
+            <h2 class="fw-bold mt-1">Loved by Freelancers &amp; Professionals</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                See how SpendWise helps individuals maintain total visibility over their financial health.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 border shadow-sm rounded-4 h-100">
+                    <div class="d-flex text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-secondary small mb-4">
+                        "SpendWise completely replaced my messy Excel sheets. The automatic 80% budget warnings have saved me from overspending on dining and subscriptions every single month."
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto">
+                        <div class="user-avatar-placeholder" style="width: 42px; height: 42px; font-weight: 700;">
+                            A
+                        </div>
+                        <div>
+                            <div class="fw-bold small">Aarav Sharma</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Full-Stack Software Engineer, Bengaluru</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 border shadow-sm rounded-4 h-100">
+                    <div class="d-flex text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-secondary small mb-4">
+                        "As a freelance UI/UX designer, my income fluctuates monthly. Having 6-month cashflow charts and decimal INR precision gives me immediate confidence in my runway."
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto">
+                        <div class="user-avatar-placeholder" style="width: 42px; height: 42px; font-weight: 700; background: var(--success-light); color: var(--success);">
+                            P
+                        </div>
+                        <div>
+                            <div class="fw-bold small">Priya Patel</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">Independent Product Designer, Mumbai</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 border shadow-sm rounded-4 h-100">
+                    <div class="d-flex text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="text-secondary small mb-4">
+                        "The built-in Swagger REST API documentation allowed me to build a custom webhook integration to log transactions directly from my credit card notification emails!"
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto">
+                        <div class="user-avatar-placeholder" style="width: 42px; height: 42px; font-weight: 700; background: var(--warning-light); color: var(--warning);">
+                            R
+                        </div>
+                        <div>
+                            <div class="fw-bold small">Rohan Varma</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">AI/ML Researcher, Hyderabad</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Transparent Pricing Matrix -->
+<!-- ========================================================================= -->
+<section id="pricing" class="py-5">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Transparent Pricing</span>
+            <h2 class="fw-bold mt-1">Simple Plans For Every Financial Journey</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Start 100% free with all essential features included. Upgrade whenever you need advanced integrations.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <!-- Free Plan -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 border shadow-sm rounded-4 h-100 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold">Community Edition</span>
+                    </div>
+                    <h4 class="fw-bold mb-1">Starter Personal</h4>
+                    <p class="text-muted small mb-3">Perfect for individual expense tracking and monthly budgets.</p>
+                    <div class="mb-4">
+                        <span class="display-6 fw-extrabold">₹0</span>
+                        <span class="text-muted small">/ forever free</span>
+                    </div>
+
+                    <ul class="list-unstyled small mb-4 d-flex flex-column gap-2 text-secondary">
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Unlimited Transactions (Income &amp; Expense)</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> 16 Default &amp; Unlimited Custom Categories</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Monthly &amp; Annual Budget Guardrails</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> 6-Month Cashflow Trend Analytics</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Secure CSV Data Exports</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Interactive OpenAPI Swagger Docs</li>
+                    </ul>
+
+                    <a href="{% url 'register' %}" class="btn btn-outline-primary w-100 mt-auto py-2 fw-semibold">
+                        Get Started Free
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pro Plan (Featured) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 border-primary shadow-lg rounded-4 h-100 d-flex flex-column position-relative" style="background: linear-gradient(180deg, var(--bg-surface) 0%, var(--primary-light) 100%);">
+                    <div class="position-absolute top-0 start-50 translate-middle">
+                        <span class="badge bg-primary px-3 py-1 rounded-pill small shadow-sm">MOST POPULAR</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3 mt-1">
+                        <span class="badge bg-primary-subtle text-primary fw-semibold">Pro Power User</span>
+                    </div>
+                    <h4 class="fw-bold mb-1">SpendWise Pro</h4>
+                    <p class="text-muted small mb-3">Designed for freelancers, power users, and side-hustlers.</p>
+                    <div class="mb-4">
+                        <span class="display-6 fw-extrabold text-primary">₹249</span>
+                        <span class="text-muted small">/ month</span>
+                    </div>
+
+                    <ul class="list-unstyled small mb-4 d-flex flex-column gap-2 text-secondary">
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> <strong>Everything in Starter Personal</strong></li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Multi-Currency Support (USD, EUR, GBP, INR)</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Recurring Transaction Automation Rules</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Automated Email &amp; SMS Budget Alerts</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Custom Tagging &amp; Tax Calculation Reports</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Priority DRF API Key Generation</li>
+                    </ul>
+
+                    <a href="{% url 'demo-login' %}" class="btn btn-primary w-100 mt-auto py-2 fw-bold shadow-sm">
+                        Test Drive in Demo Sandbox
+                    </a>
+                </div>
+            </div>
+
+            <!-- Team Plan -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 border shadow-sm rounded-4 h-100 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-secondary-subtle text-secondary fw-semibold">Family &amp; Teams</span>
+                    </div>
+                    <h4 class="fw-bold mb-1">Household / Team</h4>
+                    <p class="text-muted small mb-3">Collaborative shared budgets for households and studios.</p>
+                    <div class="mb-4">
+                        <span class="display-6 fw-extrabold">₹699</span>
+                        <span class="text-muted small">/ month</span>
+                    </div>
+
+                    <ul class="list-unstyled small mb-4 d-flex flex-column gap-2 text-secondary">
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> <strong>Everything in SpendWise Pro</strong></li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Up to 5 Linked Sub-Accounts</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Shared Household Expense Pools</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Splitwise-style Settle-Up Calculations</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Role-Based Permissions (Admin vs Viewer)</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i> Dedicated Priority Support</li>
+                    </ul>
+
+                    <a href="{% url 'register' %}" class="btn btn-outline-secondary w-100 mt-auto py-2 fw-semibold">
+                        Contact Sales / Join
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Frequently Asked Questions (FAQ) Accordion -->
+<!-- ========================================================================= -->
+<section id="faq" class="py-5 bg-body-tertiary border-top border-bottom">
+    <div class="container py-3" style="max-width: 860px;">
+        <div class="text-center mb-5">
+            <span class="text-primary text-uppercase fw-bold small tracking-wider">Got Questions?</span>
+            <h2 class="fw-bold mt-1">Frequently Asked Questions</h2>
+            <p class="text-muted mx-auto">
+                Everything you need to know about SpendWise architecture, data privacy, and feature sets.
+            </p>
+        </div>
+
+        <div class="accordion shadow-sm rounded-4 overflow-hidden" id="spendwiseFaqAccordion">
+            <!-- FAQ 1 -->
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header" id="faqHeading1">
+                    <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1">
+                        Is my financial data strictly private and isolated from other users?
+                    </button>
+                </h2>
+                <div id="faqCollapse1" class="accordion-collapse collapse show" data-bs-parent="#spendwiseFaqAccordion">
+                    <div class="accordion-body text-secondary small">
+                        <strong>Absolutely.</strong> SpendWise enforces strict row-level multi-tenant isolation at the database ORM layer. Every database query filters by <code>user=request.user</code>. Foreign key constraints and validation routines ensure no user can ever view, edit, or tamper with another account's transactions, categories, or budgets.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header" id="faqHeading2">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2">
+                        How does the 1-Click Instant Demo Sandbox work?
+                    </button>
+                </h2>
+                <div id="faqCollapse2" class="accordion-collapse collapse" data-bs-parent="#spendwiseFaqAccordion">
+                    <div class="accordion-body text-secondary small">
+                        The 1-Click Demo Sandbox signs you straight into a pre-populated demo account filled with realistic transactions, active budgets, and analytics charts. You can test adding new records, editing budgets, downloading CSVs, and toggling dark mode without creating an account.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header" id="faqHeading3">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3">
+                        How do the automated 80% and 100% budget alerts operate?
+                    </button>
+                </h2>
+                <div id="faqCollapse3" class="accordion-collapse collapse" data-bs-parent="#spendwiseFaqAccordion">
+                    <div class="accordion-body text-secondary small">
+                        When you define a budget target for a category (or overall monthly spending), SpendWise automatically calculates your aggregate expenses for that timeframe. If spending reaches <strong>80%</strong>, the progress bar turns warning yellow. If it reaches or exceeds <strong>100%</strong>, danger banners highlight the breach to keep your spending controlled.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header" id="faqHeading4">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4">
+                        Can I integrate external apps using the REST API?
+                    </button>
+                </h2>
+                <div id="faqCollapse4" class="accordion-collapse collapse" data-bs-parent="#spendwiseFaqAccordion">
+                    <div class="accordion-body text-secondary small">
+                        Yes! SpendWise ships with a complete Django REST Framework API engine located under <code>/api/v1/</code>. You can generate user tokens, query transactions, register categories, and inspect live interactive endpoint specifications via Swagger UI at <code>/api/docs/</code>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="faqHeading5">
+                    <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5">
+                        Is CSV export protected against spreadsheet security exploits?
+                    </button>
+                </h2>
+                <div id="faqCollapse5" class="accordion-collapse collapse" data-bs-parent="#spendwiseFaqAccordion">
+                    <div class="accordion-body text-secondary small">
+                        Yes. Our export engine implements CSV formula injection mitigation. Any transaction titles or descriptions beginning with formula characters like <code>=</code>, <code>+</code>, <code>-</code>, or <code>@</code> are sanitized so Microsoft Excel and Google Sheets do not execute unauthorized formulas.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Final High-Impact CTA Banner -->
+<!-- ========================================================================= -->
+<section class="py-5 position-relative overflow-hidden text-center text-white" style="background: linear-gradient(135deg, #312e81 0%, #1e1b4b 50%, #0f172a 100%);">
+    <div class="container py-4 position-relative">
+        <h2 class="display-5 fw-extrabold mb-3">Ready to Take Control of Your Financial Future?</h2>
+        <p class="lead text-light opacity-75 mx-auto mb-4" style="max-width: 640px;">
+            Join thousands of individuals tracking their wealth with confidence. No credit card required.
+        </p>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3">
+            <a href="{% url 'demo-login' %}" class="btn btn-warning btn-lg px-4 py-3 fw-bold text-dark shadow-lg">
+                <i class="bi bi-lightning-charge-fill me-1"></i> Try Instant Demo Sandbox
+            </a>
+            <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
+                Create Free Account
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Enterprise SaaS Footer -->
+<!-- ========================================================================= -->
+<footer class="landing-footer py-5 border-top bg-body">
+    <div class="container">
+        <div class="row g-4 mb-5">
+            <!-- Brand Column -->
+            <div class="col-lg-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="brand-icon-box shadow-sm" style="width: 36px; height: 36px;">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <span class="fs-4 fw-extrabold brand-gradient-text">SpendWise</span>
+                </div>
+                <p class="text-muted small mb-3" style="max-width: 320px;">
+                    Enterprise-grade personal expense intelligence platform built with Django 5, MySQL, and Chart.js.
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                        <i class="bi bi-check-circle-fill me-1"></i> Systems Operational (99.98%)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Product Links -->
+            <div class="col-6 col-sm-4 col-lg-2">
+                <h6 class="fw-bold mb-3 small text-uppercase tracking-wider">Product</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><a href="#features" class="text-muted text-decoration-none">Features</a></li>
+                    <li><a href="#preview" class="text-muted text-decoration-none">Interactive Preview</a></li>
+                    <li><a href="#calculator" class="text-muted text-decoration-none">Savings Calculator</a></li>
+                    <li><a href="#pricing" class="text-muted text-decoration-none">Pricing Plans</a></li>
+                    <li><a href="#faq" class="text-muted text-decoration-none">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Platform & API -->
+            <div class="col-6 col-sm-4 col-lg-2">
+                <h6 class="fw-bold mb-3 small text-uppercase tracking-wider">Developer &amp; API</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><a href="{% url 'swagger-ui' %}" target="_blank" class="text-muted text-decoration-none">Swagger OpenAPI UI</a></li>
+                    <li><a href="{% url 'redoc' %}" target="_blank" class="text-muted text-decoration-none">Redoc Specification</a></li>
+                    <li><a href="{% url 'schema' %}" target="_blank" class="text-muted text-decoration-none">Raw OpenAPI Schema</a></li>
+                    <li><a href="{% url 'demo-login' %}" class="text-muted text-decoration-none">Instant Demo Sandbox</a></li>
+                </ul>
+            </div>
+
+            <!-- Security & Legal -->
+            <div class="col-6 col-sm-4 col-lg-2">
+                <h6 class="fw-bold mb-3 small text-uppercase tracking-wider">Trust &amp; Privacy</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><span class="text-muted">Row-Level Tenancy</span></li>
+                    <li><span class="text-muted">Anti-CSV Injection</span></li>
+                    <li><span class="text-muted">Encrypted Sessions</span></li>
+                    <li><span class="text-muted">CSRF Protection</span></li>
+                </ul>
+            </div>
+
+            <!-- Quick Access -->
+            <div class="col-6 col-sm-4 col-lg-2">
+                <h6 class="fw-bold mb-3 small text-uppercase tracking-wider">Access</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><a href="{% url 'login' %}" class="text-muted text-decoration-none">Sign In</a></li>
+                    <li><a href="{% url 'register' %}" class="text-muted text-decoration-none">Create Account</a></li>
+                    <li><a href="{% url 'demo-login' %}" class="text-primary text-decoration-none fw-semibold">1-Click Demo Sandbox</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 border-top text-muted small gap-2">
+            <div>
+                &copy; {{ CURRENT_YEAR|default:"2026" }} <strong>SpendWise</strong>. Track smarter. Spend better.
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span>Built with Django 5 &amp; Bootstrap 5</span>
+                <span>•</span>
+                <span>OpenAPI 3.0 Ready</span>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// =============================================================================
+// SpendWise Landing Page Interactive Functionality
+// =============================================================================
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Live Preview Mockup Tab Switcher
+    const tabBtns = document.querySelectorAll('.preview-tab-btn');
+    const tabPanes = document.querySelectorAll('.preview-tab-pane');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const targetId = this.getAttribute('data-tab');
+            tabPanes.forEach(pane => {
+                if (pane.id === targetId) {
+                    pane.classList.remove('d-none');
+                    pane.classList.add('active');
+                } else {
+                    pane.classList.add('d-none');
+                    pane.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // 2. Interactive Savings & Compound Wealth Calculator
+    const calcIncome = document.getElementById('calc-income');
+    const calcExpense = document.getElementById('calc-expense');
+    const calcRate = document.getElementById('calc-rate');
+
+    const calcIncomeVal = document.getElementById('calc-income-val');
+    const calcExpenseVal = document.getElementById('calc-expense-val');
+    const calcRateVal = document.getElementById('calc-rate-val');
+
+    const calcMonthlySurplus = document.getElementById('calc-monthly-surplus');
+    const calc1yrSavings = document.getElementById('calc-1yr-savings');
+    const calc5yrWealth = document.getElementById('calc-5yr-wealth');
+    const calcRunway = document.getElementById('calc-runway');
+    const calcRunwayBar = document.getElementById('calc-runway-bar');
+    const calcVerdict = document.getElementById('calc-verdict');
+
+    const calcBarNeeds = document.getElementById('calc-bar-needs');
+    const calcBarWants = document.getElementById('calc-bar-wants');
+    const calcBarSavings = document.getElementById('calc-bar-savings');
+
+    function formatINR(val) {
+        return '₹' + Math.round(val).toLocaleString('en-IN');
+    }
+
+    function updateCalculator() {
+        if (!calcIncome || !calcExpense || !calcRate) return;
+
+        const income = parseFloat(calcIncome.value) || 0;
+        let expense = parseFloat(calcExpense.value) || 0;
+        const ratePct = parseFloat(calcRate.value) || 10;
+
+        // Display current slider values
+        calcIncomeVal.textContent = formatINR(income);
+        calcExpenseVal.textContent = formatINR(expense);
+        calcRateVal.textContent = ratePct.toFixed(1) + '%';
+
+        // Monthly surplus
+        const surplus = Math.max(0, income - expense);
+        calcMonthlySurplus.textContent = formatINR(surplus);
+
+        // 1-Year Net direct savings
+        const yr1Savings = surplus * 12;
+        calc1yrSavings.textContent = formatINR(yr1Savings);
+
+        // 5-Year Compound SIP Formula: FV = P * [((1 + r/12)^(n) - 1) / (r/12)] * (1 + r/12)
+        const monthlyRate = (ratePct / 100) / 12;
+        const totalMonths = 60; // 5 years
+        let compound5yr = 0;
+        if (monthlyRate > 0) {
+            compound5yr = surplus * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate);
+        } else {
+            compound5yr = surplus * totalMonths;
+        }
+        calc5yrWealth.textContent = formatINR(compound5yr);
+
+        // Emergency Runway (Months of survival with 1 year savings)
+        const runwayMonths = expense > 0 ? (yr1Savings / expense) : 12;
+        calcRunway.textContent = runwayMonths.toFixed(1) + ' Months';
+        const runwayBarPct = Math.min(100, Math.round((runwayMonths / 12) * 100));
+        calcRunwayBar.style.width = runwayBarPct + '%';
+
+        // 50/30/20 Distribution Assessment
+        const needsPct = Math.min(100, Math.round((expense * 0.65 / income) * 100));
+        const wantsPct = Math.min(100, Math.round((expense * 0.35 / income) * 100));
+        const savingsPct = Math.max(0, 100 - needsPct - wantsPct);
+
+        calcBarNeeds.style.width = needsPct + '%';
+        calcBarWants.style.width = wantsPct + '%';
+        calcBarSavings.style.width = savingsPct + '%';
+
+        if (savingsPct >= 25) {
+            calcVerdict.textContent = 'Excellent (High Growth)';
+            calcVerdict.className = 'badge bg-success';
+        } else if (savingsPct >= 15) {
+            calcVerdict.textContent = 'Optimal Health';
+            calcVerdict.className = 'badge bg-primary';
+        } else if (savingsPct >= 5) {
+            calcVerdict.textContent = 'Moderate (Tight Margins)';
+            calcVerdict.className = 'badge bg-warning';
+        } else {
+            calcVerdict.textContent = 'Deficit / High Risk';
+            calcVerdict.className = 'badge bg-danger';
+        }
+    }
+
+    if (calcIncome && calcExpense && calcRate) {
+        calcIncome.addEventListener('input', updateCalculator);
+        calcExpense.addEventListener('input', updateCalculator);
+        calcRate.addEventListener('input', updateCalculator);
+        updateCalculator();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Delete Transaction{% endblock %}
+{% block page_heading %}Delete Transaction{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0" style="max-width: 550px;">
+    <div class="card shadow-sm border p-4 text-center">
+        <div class="text-danger mb-3">
+            <i class="bi bi-exclamation-triangle-fill display-4"></i>
+        </div>
+
+        <h4 class="fw-bold mb-2">Delete Transaction?</h4>
+        <p class="text-muted small mb-4">
+            Are you sure you want to permanently delete this financial record? This action cannot be reversed.
+        </p>
+
+        <!-- Transaction Details Card -->
+        <div class="card bg-body-tertiary border text-start p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge {% if transaction.transaction_type == 'income' %}badge-income{% else %}badge-expense{% endif %}">
+                    {{ transaction.get_transaction_type_display }}
+                </span>
+                <span class="text-muted small">{{ transaction.transaction_date|date:"d M Y" }}</span>
+            </div>
+            <h5 class="fw-bold mb-1">{{ transaction.title }}</h5>
+            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                <span class="category-pill">
+                    <span class="category-dot" style="background-color: {{ transaction.category.color }};"></span>
+                    {{ transaction.category.name }}
+                </span>
+                <span class="fs-5 fw-bold {% if transaction.transaction_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                    {% if transaction.transaction_type == 'income' %}+{% else %}-{% endif %}₹{{ transaction.amount|floatformat:2 }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Confirm Form -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'transaction-list' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="bi bi-trash3-fill me-1"></i> Yes, Permanently Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

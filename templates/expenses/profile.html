@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Profile{% endblock %}
+{% block page_heading %}Account Settings{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0" style="max-width: 900px;">
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Profile &amp; Security Settings</h4>
+            <p class="text-muted small mb-0">Manage your personal credentials, contact info, and API tokens.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Profile Overview Card -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border p-4 text-center">
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid var(--primary);">
+                    {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm mx-auto" style="width: 100px; height: 100px; font-size: 2.5rem; font-weight: 700;">
+                        {{ user.username|make_list|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <h5 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                <p class="text-muted small mb-2">@{{ user.username }}</p>
+                <span class="badge bg-primary-subtle text-primary mb-3">Member since {{ user.date_joined|date:"M Y" }}</span>
+
+                {% if profile.bio %}
+                <p class="text-muted small text-start p-2 bg-body-tertiary rounded">{{ profile.bio }}</p>
+                {% endif %}
+
+                <!-- Developer REST API Token Display -->
+                <div class="mt-3 pt-3 border-top text-start">
+                    <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-key-fill text-warning me-1"></i>Personal API Token</label>
+                    <div class="input-group input-group-sm">
+                        <input type="password" id="apiTokenInput" class="form-control font-monospace" value="{{ user.auth_token.key|default:'Generate via /api/v1/auth/token/' }}" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="toggleTokenVisibility()" title="Show/Hide">
+                            <i class="bi bi-eye" id="tokenToggleIcon"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">Use in Authorization header: <code>Token &lt;token&gt;</code></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forms: Profile Details & Password Change -->
+        <div class="col-12 col-md-8">
+            <!-- Edit Profile Form -->
+            <div class="card shadow-sm border p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i>Personal Information</h5>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_profile">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-semibold">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Currency Code</label>
+                            {{ form.currency }}
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-semibold">Profile Photo</label>
+                            {{ form.avatar }}
+                            {% if form.avatar.errors %}
+                                <div class="text-danger small mt-1">{{ form.avatar.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Financial Bio / Notes</label>
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-save me-1"></i> Save Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Password Change Form -->
+            <div class="card shadow-sm border p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock text-primary me-2"></i>Change Password</h5>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="change_password">
+
+                    {% if pwd_form.non_field_errors %}
+                    <div class="alert alert-danger py-2 small mb-3">
+                        {% for error in pwd_form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Current Password</label>
+                        <input type="password" name="old_password" class="form-control" required placeholder="Enter current password">
+                        {% if pwd_form.old_password.errors %}
+                            <div class="text-danger small mt-1">{{ pwd_form.old_password.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">New Password</label>
+                            <input type="password" name="new_password1" class="form-control" required placeholder="Min. 8 characters">
+                            {% if pwd_form.new_password1.errors %}
+                                <div class="text-danger small mt-1">{{ pwd_form.new_password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Confirm New Password</label>
+                            <input type="password" name="new_password2" class="form-control" required placeholder="Re-enter new password">
+                            {% if pwd_form.new_password2.errors %}
+                                <div class="text-danger small mt-1">{{ pwd_form.new_password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-outline-primary px-4">
+                            <i class="bi bi-key me-1"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleTokenVisibility() {
+    const input = document.getElementById('apiTokenInput');
+    const icon = document.getElementById('tokenToggleIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,65 @@
+<header class="top-navbar">
+    <div class="d-flex align-items-center gap-3">
+        <!-- Mobile Sidebar Hamburger Toggle -->
+        <button id="sidebar-toggle" class="btn btn-sm btn-outline-secondary d-lg-none" type="button" aria-label="Toggle navigation">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+
+        <div class="d-none d-sm-block">
+            <h5 class="mb-0 fw-bold">{% block page_heading %}Financial Overview{% endblock %}</h5>
+            <small class="text-muted">SpendWise Intelligent Financial Tracker</small>
+        </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="d-flex align-items-center gap-2">
+        <!-- Add Quick Transaction Button -->
+        <a href="{% url 'transaction-create' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span class="d-none d-md-inline">Add Transaction</span>
+        </a>
+
+        <!-- Dark / Light Mode Toggle Button -->
+        <button id="theme-toggle-btn" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;" type="button" title="Toggle theme">
+            <i class="bi bi-moon-stars-fill"></i>
+        </button>
+
+        <!-- Product Website Showcase Link -->
+        <a href="{% url 'landing' %}?view=showcase" class="btn btn-outline-secondary btn-sm d-none d-lg-flex align-items-center gap-1" title="Product Showcase & Landing Page">
+            <i class="bi bi-globe"></i>
+            <span>Website</span>
+        </a>
+
+        <!-- API Documentation Quick Link -->
+        <a href="{% url 'swagger-ui' %}" target="_blank" class="btn btn-outline-secondary btn-sm d-none d-md-flex align-items-center gap-1" title="API Swagger Documentation">
+            <i class="bi bi-code-slash"></i>
+            <span>API Docs</span>
+        </a>
+
+        <!-- User Dropdown Menu -->
+        <div class="dropdown">
+            <button class="btn btn-link p-0 text-decoration-none dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="user-avatar" style="width: 36px; height: 36px;">
+                {% else %}
+                <div class="user-avatar-placeholder" style="width: 36px; height: 36px;">
+                    {{ user.username|make_list|first|upper }}
+                </div>
+                {% endif %}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border mt-2">
+                <li class="px-3 py-2 border-bottom">
+                    <span class="d-block fw-bold small text-truncate">{{ user.get_full_name|default:user.username }}</span>
+                    <span class="d-block text-muted small text-truncate">{{ user.email }}</span>
+                </li>
+                <li><a class="dropdown-item py-2 small" href="{% url 'landing' %}?view=showcase"><i class="bi bi-globe me-2"></i>Product Website</a></li>
+                <li><a class="dropdown-item py-2 small" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                <li><a class="dropdown-item py-2 small" href="{% url 'category-list' %}"><i class="bi bi-tags me-2"></i>Categories</a></li>
+                <li><a class="dropdown-item py-2 small" href="{% url 'budget-list' %}"><i class="bi bi-pie-chart me-2"></i>Budget Goals</a></li>
+                <li><a class="dropdown-item py-2 small" href="{% url 'swagger-ui' %}" target="_blank"><i class="bi bi-file-code me-2"></i>Interactive API Docs</a></li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li><a class="dropdown-item py-2 small text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+            </ul>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0" style="max-width: 650px;">
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">{{ title }}</h4>
+            <p class="text-muted small mb-0">Set spending guardrails to stay on track financially.</p>
+        </div>
+        <a href="{% url 'budget-list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Back to Budgets
+        </a>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card shadow-sm border p-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 small mb-3">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Budget Name <span class="text-danger">*</span></label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row g-3 mb-3">
+                <!-- Target Category -->
+                <div class="col-md-7">
+                    <label class="form-label small fw-semibold">Category Scope</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
+                    {% endif %}
+                    <div class="form-text small">Select a category or leave as Overall to cap all monthly expenses.</div>
+                </div>
+
+                <!-- Period -->
+                <div class="col-md-5">
+                    <label class="form-label small fw-semibold">Period <span class="text-danger">*</span></label>
+                    {{ form.period }}
+                    {% if form.period.errors %}
+                        <div class="text-danger small mt-1">{{ form.period.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Amount Limit -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Budget Spending Limit (INR ₹) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <span class="input-group-text fw-bold">₹</span>
+                    {{ form.amount_limit }}
+                </div>
+                {% if form.amount_limit.errors %}
+                    <div class="text-danger small mt-1">{{ form.amount_limit.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Dates -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">Start Date <span class="text-danger">*</span></label>
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                        <div class="text-danger small mt-1">{{ form.start_date.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold">End Date <span class="text-danger">*</span></label>
+                    {{ form.end_date }}
+                    {% if form.end_date.errors %}
+                        <div class="text-danger small mt-1">{{ form.end_date.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'budget-list' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check2-circle me-1"></i> Save Budget
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

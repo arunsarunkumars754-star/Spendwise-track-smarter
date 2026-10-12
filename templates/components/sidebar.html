@@ -1,0 +1,81 @@
+{% load static %}
+<aside class="sidebar">
+    <!-- Brand Header -->
+    <div class="sidebar-brand">
+        <div class="brand-icon-box">
+            <i class="bi bi-wallet2"></i>
+        </div>
+        <div>
+            <div class="brand-text">SpendWise</div>
+            <div class="brand-tagline">Track smarter</div>
+        </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">Core</div>
+        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="{% url 'transaction-list' %}" class="nav-link {% if 'transaction' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Transactions</span>
+        </a>
+        <a href="{% url 'category-list' %}" class="nav-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-grid-fill"></i>
+            <span>Categories</span>
+        </a>
+        <a href="{% url 'budget-list' %}" class="nav-link {% if 'budget' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-pie-chart-fill"></i>
+            <span>Budgets</span>
+        </a>
+
+        <div class="nav-section-title">Insights</div>
+        <a href="{% url 'analytics' %}" class="nav-link {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
+            <i class="bi bi-graph-up"></i>
+            <span>Analytics</span>
+        </a>
+        <a href="{% url 'reports' %}" class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            <span>Reports</span>
+        </a>
+
+        <div class="nav-section-title">Platform</div>
+        <a href="{% url 'landing' %}?view=showcase" class="nav-link">
+            <i class="bi bi-globe"></i>
+            <span>Product Website</span>
+        </a>
+        <a href="{% url 'swagger-ui' %}" target="_blank" class="nav-link">
+            <i class="bi bi-code-square"></i>
+            <span>Swagger API</span>
+        </a>
+
+        <div class="nav-section-title">Account</div>
+        <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="bi bi-person-circle"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{% url 'logout' %}" class="nav-link text-danger-emphasis">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
+    <!-- User Profile Footer -->
+    <div class="sidebar-footer">
+        <div class="user-profile-widget">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="user-avatar">
+            {% else %}
+            <div class="user-avatar-placeholder">
+                {{ user.username|make_list|first|upper }}
+            </div>
+            {% endif %}
+            <div class="overflow-hidden">
+                <div class="text-white fw-bold text-truncate small">{{ user.first_name|default:user.username }}</div>
+                <div class="text-muted text-truncate" style="font-size: 0.75rem;">{{ user.email|default:"Account" }}</div>
+            </div>
+        </div>
+    </div>
+</aside>

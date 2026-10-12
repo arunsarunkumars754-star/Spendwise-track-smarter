@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics{% endblock %}
+{% block page_heading %}Financial Analytics{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Filter Bar Header -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Financial Analytics &amp; Visualizations</h4>
+            <p class="text-muted small mb-0">Deep dive into spending distributions, monthly comparisons, and payment methods.</p>
+        </div>
+
+        <form method="get" class="d-flex flex-wrap align-items-center gap-2">
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="?period=this_month" class="btn btn-outline-secondary {% if period_filter == 'this_month' %}active fw-bold{% endif %}">This Month</a>
+                <a href="?period=last_month" class="btn btn-outline-secondary {% if period_filter == 'last_month' %}active fw-bold{% endif %}">Last Month</a>
+                <a href="?period=last_3_months" class="btn btn-outline-secondary {% if period_filter == 'last_3_months' %}active fw-bold{% endif %}">3 Months</a>
+                <a href="?period=this_year" class="btn btn-outline-secondary {% if period_filter == 'this_year' %}active fw-bold{% endif %}">This Year</a>
+                <button type="button" class="btn btn-outline-secondary {% if period_filter == 'custom' %}active fw-bold{% endif %}" data-bs-toggle="collapse" data-bs-target="#customDateFilter">Custom</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Collapsible Custom Date Picker -->
+    <div class="collapse mb-4 {% if period_filter == 'custom' %}show{% endif %}" id="customDateFilter">
+        <div class="card p-3 shadow-sm border">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="period" value="custom">
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">Start Date</label>
+                    <input type="date" name="start_date" class="form-control form-control-sm" value="{{ custom_start }}" required>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">End Date</label>
+                    <input type="date" name="end_date" class="form-control form-control-sm" value="{{ custom_end }}" required>
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Apply Date</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Row 1: Income vs Expense & Monthly Expense Trend -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-xl-6">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-bar-chart-line text-primary me-2"></i>Income vs. Expenses (Past 6 Months)</span>
+                </div>
+                <div class="card-body">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="incomeExpenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-graph-up-arrow text-danger me-2"></i>Daily Expense Spending Trend</span>
+                </div>
+                <div class="card-body">
+                    {% if chart_data.daily_trend.data %}
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="dailyExpenseTrendChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-5">
+                        <i class="bi bi-graph-up text-muted display-6"></i>
+                        <p class="small text-muted mt-2 mb-0">No daily expense data in this timeframe.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Category Breakdown & Payment Method Distribution -->
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-pie-chart text-primary me-2"></i>Category Expense Allocation</span>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    {% if chart_data.category_breakdown.data %}
+                    <div style="height: 300px; width: 100%; position: relative;">
+                        <canvas id="categoryDoughnutChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-5">
+                        <i class="bi bi-pie-chart text-muted display-6"></i>
+                        <p class="small text-muted mt-2 mb-0">No expense transactions recorded in this period.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="card h-100 shadow-sm border">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-credit-card text-info me-2"></i>Spending by Payment Method</span>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    {% if chart_data.payment_methods.data %}
+                    <div style="height: 300px; width: 100%; position: relative;">
+                        <canvas id="paymentMethodChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-5">
+                        <i class="bi bi-credit-card text-muted display-6"></i>
+                        <p class="small text-muted mt-2 mb-0">No payment records in this period.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Top Spending Categories -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <span class="fw-bold"><i class="bi bi-trophy text-warning me-2"></i>Top 5 Highest Expense Categories</span>
+                </div>
+                <div class="card-body">
+                    {% if chart_data.top_categories.data %}
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="topCategoriesChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <p class="small text-muted mb-0">No top categories available for the selected dates.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+    const gridColor = isDark ? '#1f2937' : '#f1f5f9';
+    const textColor = isDark ? '#9ca3af' : '#64748b';
+
+    // 1. Income vs Expense Bar Chart
+    const ieCtx = document.getElementById('incomeExpenseChart');
+    if (ieCtx) {
+        new Chart(ieCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ chart_data.monthly_comparison.labels|safe }},
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: {{ chart_data.monthly_comparison.income|safe }},
+                        backgroundColor: '#10b981',
+                        borderRadius: 6,
+                    },
+                    {
+                        label: 'Expenses',
+                        data: {{ chart_data.monthly_comparison.expense|safe }},
+                        backgroundColor: '#ef4444',
+                        borderRadius: 6,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: textColor, font: { family: 'Plus Jakarta Sans' } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) { return ctx.dataset.label + ': ₹' + ctx.raw.toLocaleString('en-IN', {minimumFractionDigits: 2}); }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: textColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor, callback: v => '₹' + v.toLocaleString('en-IN') } }
+                }
+            }
+        });
+    }
+
+    // 2. Daily Expense Trend Line Chart
+    const dailyCtx = document.getElementById('dailyExpenseTrendChart');
+    if (dailyCtx) {
+        new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_data.daily_trend.labels|safe }},
+                datasets: [{
+                    label: 'Daily Expenses',
+                    data: {{ chart_data.daily_trend.data|safe }},
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    fill: true,
+                    tension: 0.35,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: textColor } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) { return 'Spent: ₹' + ctx.raw.toLocaleString('en-IN', {minimumFractionDigits: 2}); }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: textColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: textColor, callback: v => '₹' + v.toLocaleString('en-IN') } }
+                }
+            }
+        });
+    }
+
+    // 3. Category Doughnut Chart
+    const catCtx = document.getElementById('categoryDoughnutChart');
+    if (catCtx) {
+        new Chart(catCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ chart_data.category_breakdown.labels|safe }},
+                datasets: [{
+                    data: {{ chart_data.category_breakdown.data|safe }},
+                    backgroundColor: {{ chart_data.category_breakdown.colors|safe }},
+                    borderWidth: 2,
+                    borderColor: isDark ? '#111827' : '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, boxWidth: 12 } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) { return ctx.label + ': ₹' + ctx.raw.toLocaleString('en-IN', {minimumFractionDigits: 2}); }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+
+    // 4. Payment Methods (Pie Chart)
+    const pmCtx = document.getElementById('paymentMethodChart');
+    if (pmCtx) {
+        new Chart(pmCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ chart_data.payment_methods.labels|safe }},
+                datasets: [{
+                    data: {{ chart_data.payment_methods.data|safe }},
+                    backgroundColor: ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
+                    borderWidth: 2,
+                    borderColor: isDark ? '#111827' : '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: textColor, boxWidth: 12 } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) { return ctx.label + ': ₹' + ctx.raw.toLocaleString('en-IN', {minimumFractionDigits: 2}); }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 5. Top 5 Categories Horizontal Bar Chart
+    const topCtx = document.getElementById('topCategoriesChart');
+    if (topCtx) {
+        new Chart(topCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ chart_data.top_categories.labels|safe }},
+                datasets: [{
+                    label: 'Amount Spent',
+                    data: {{ chart_data.top_categories.data|safe }},
+                    backgroundColor: '#4f46e5',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) { return '₹' + ctx.raw.toLocaleString('en-IN', {minimumFractionDigits: 2}); }
+                        }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: textColor, callback: v => '₹' + v.toLocaleString('en-IN') } },
+                    y: { grid: { display: false }, ticks: { color: textColor } }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Category{% endblock %}
+{% block page_heading %}Delete Category{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0" style="max-width: 550px;">
+    <div class="card shadow-sm border p-4 text-center">
+        {% if tx_count > 0 %}
+            <!-- Protected: Transactions Exist -->
+            <div class="text-warning mb-3">
+                <i class="bi bi-shield-lock-fill display-4"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Category Protected</h4>
+            <div class="alert alert-warning py-3 text-start small mb-4">
+                <strong>Cannot delete category "{{ category.name }}"</strong>
+                <p class="mb-0 mt-1">
+                    There are currently <strong>{{ tx_count }}</strong> transaction(s) assigned to this category. SpendWise enforces financial data integrity and does not allow accidental orphaned records.
+                </p>
+            </div>
+            <p class="text-muted small mb-4">
+                To delete this category, please reassign or remove its linked transactions first.
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'transaction-list' %}?category={{ category.id }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-right-circle me-1"></i> View Linked Transactions
+                </a>
+                <a href="{% url 'category-list' %}" class="btn btn-secondary btn-sm">Back to Categories</a>
+            </div>
+        {% else %}
+            <!-- Deletion Allowed -->
+            <div class="text-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill display-4"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Delete Category?</h4>
+            <p class="text-muted small mb-4">
+                Are you sure you want to delete the category <strong>"{{ category.name }}"</strong>? No transactions are currently linked to this category.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'category-list' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="bi bi-trash3-fill me-1"></i> Delete Category
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

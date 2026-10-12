@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reports{% endblock %}
+{% block page_heading %}Financial Reports{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Header with Export Button -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Financial Statements &amp; Reports</h4>
+            <p class="text-muted small mb-0">Period: <strong>{{ summary.period_start|date:"d M Y" }}</strong> to <strong>{{ summary.period_end|date:"d M Y" }}</strong></p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <!-- Period Preset Buttons -->
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="?period=this_month" class="btn btn-outline-secondary {% if period_filter == 'this_month' %}active fw-bold{% endif %}">This Month</a>
+                <a href="?period=last_month" class="btn btn-outline-secondary {% if period_filter == 'last_month' %}active fw-bold{% endif %}">Last Month</a>
+                <a href="?period=this_year" class="btn btn-outline-secondary {% if period_filter == 'this_year' %}active fw-bold{% endif %}">This Year</a>
+                <a href="?period=all_time" class="btn btn-outline-secondary {% if period_filter == 'all_time' %}active fw-bold{% endif %}">All Time</a>
+                <button type="button" class="btn btn-outline-secondary {% if period_filter == 'custom' %}active fw-bold{% endif %}" data-bs-toggle="collapse" data-bs-target="#customDateFilter">Custom</button>
+            </div>
+
+            <!-- One-Click Export CSV -->
+            <a href="{% url 'export-csv' %}?start_date={{ summary.period_start|date:'Y-m-d' }}&end_date={{ summary.period_end|date:'Y-m-d' }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Custom Date Filter Collapse -->
+    <div class="collapse mb-4 {% if period_filter == 'custom' %}show{% endif %}" id="customDateFilter">
+        <div class="card p-3 shadow-sm border">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="period" value="custom">
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">Start Date</label>
+                    <input type="date" name="start_date" class="form-control form-control-sm" value="{{ custom_start }}" required>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small fw-semibold">End Date</label>
+                    <input type="date" name="end_date" class="form-control form-control-sm" value="{{ custom_end }}" required>
+                </div>
+                <div class="col-sm-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Filter Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Financial Statement Executive Summary -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-transparent">
+            <h6 class="fw-bold mb-0"><i class="bi bi-file-text text-primary me-2"></i>Executive Summary Statement</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small">Gross Inflow (Income)</div>
+                    <h4 class="fw-bold text-success mb-1">₹{{ summary.period_income|floatformat:2 }}</h4>
+                    <span class="small text-muted">Total recorded earnings</span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small">Gross Outflow (Expenses)</div>
+                    <h4 class="fw-bold text-danger mb-1">₹{{ summary.period_expense|floatformat:2 }}</h4>
+                    <span class="small text-muted">Total recorded spend</span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small">Period Net Savings</div>
+                    <h4 class="fw-bold {% if summary.period_savings >= 0 %}text-primary{% else %}text-danger{% endif %} mb-1">
+                        {% if summary.period_savings >= 0 %}+{% endif %}₹{{ summary.period_savings|floatformat:2 }}
+                    </h4>
+                    <span class="small text-muted">Surplus / Deficit</span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-muted small">Savings Rate</div>
+                    <h4 class="fw-bold {% if summary.savings_rate >= 20 %}text-success{% else %}text-warning{% endif %} mb-1">
+                        {{ summary.savings_rate }}%
+                    </h4>
+                    <span class="small text-muted">Of income retained</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category-Wise Expense & Income Breakdown Table -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold mb-0"><i class="bi bi-tags text-primary me-2"></i>Category-Wise Breakdown</h6>
+            <span class="badge bg-secondary-subtle text-secondary">{{ category_reports|length }} Categories Active</span>
+        </div>
+        <div class="card-body p-0 table-responsive">
+            {% if category_reports %}
+            <table class="table table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Classification</th>
+                        <th>Transaction Count</th>
+                        <th class="text-end">Total Amount (INR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in category_reports %}
+                    <tr>
+                        <td>
+                            <span class="category-pill">
+                                <span class="category-dot" style="background-color: {{ item.category__color }};"></span>
+                                {{ item.category__name }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge {% if item.category__category_type == 'income' %}badge-income{% else %}badge-expense{% endif %}">
+                                {{ item.category__category_type|title }}
+                            </span>
+                        </td>
+                        <td class="text-muted">{{ item.tx_count }} record{{ item.tx_count|pluralize }}</td>
+                        <td class="text-end fw-bold {% if item.category__category_type == 'income' %}text-success{% else %}text-danger{% endif %}">
+                            ₹{{ item.total_amount|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state py-4 text-muted small">
+                No transactions found for the specified period.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Payment Methods Breakdown Table -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-transparent">
+            <h6 class="fw-bold mb-0"><i class="bi bi-wallet2 text-info me-2"></i>Payment Channel Volume</h6>
+        </div>
+        <div class="card-body p-0 table-responsive">
+            {% if payment_reports %}
+            <table class="table table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th>Payment Method</th>
+                        <th>Type</th>
+                        <th>Count</th>
+                        <th class="text-end">Total Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pm in payment_reports %}
+                    <tr>
+                        <td class="fw-semibold">{{ pm.method_name }}</td>
+                        <td>
+                            <span class="badge {% if pm.type == 'income' %}badge-income{% else %}badge-expense{% endif %}">
+                                {{ pm.type|title }}
+                            </span>
+                        </td>
+                        <td class="text-muted">{{ pm.tx_count }}</td>
+                        <td class="text-end fw-bold">₹{{ pm.total_amount|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state py-4 text-muted small">
+                No payment data in this period.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

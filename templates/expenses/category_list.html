@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Categories{% endblock %}
+{% block page_heading %}Category Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Categories</h4>
+            <p class="text-muted small mb-0">Organize your expenses and income streams with customized labels, colors, and icons.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'category-create' %}?type=expense" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-plus-lg"></i> Add Expense Category
+            </a>
+            <a href="{% url 'category-create' %}?type=income" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-plus-lg"></i> Add Income Category
+            </a>
+        </div>
+    </div>
+
+    <!-- Expense Categories Section -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+            <span class="fw-bold"><i class="bi bi-arrow-up-right text-danger me-2"></i>Expense Categories ({{ expense_categories|length }})</span>
+            <small class="text-muted">Used for spending budgets &amp; outgoing costs</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for cat in expense_categories %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card h-100 border p-3 shadow-none bg-body-tertiary">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="metric-icon-box" style="background-color: {{ cat.color }}20; color: {{ cat.color }}; width: 38px; height: 38px; font-size: 1.1rem;">
+                                    <i class="bi {{ cat.icon }}"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">{{ cat.name }}</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary small" style="font-size: 0.7rem;">
+                                        {{ cat.tx_count }} transaction{{ cat.tx_count|pluralize }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-link text-muted p-0" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item py-1 small" href="{% url 'category-update' cat.pk %}"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                    <li><a class="dropdown-item py-1 small text-danger" href="{% url 'category-delete' cat.pk %}"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% if cat.description %}
+                        <p class="text-muted small mb-0 text-truncate">{{ cat.description }}</p>
+                        {% else %}
+                        <p class="text-muted small mb-0 fst-italic">No description</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4 text-muted small">
+                    No expense categories configured. Click "Add Expense Category" to start.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Categories Section -->
+    <div class="card shadow-sm border mb-4">
+        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+            <span class="fw-bold"><i class="bi bi-arrow-down-left text-success me-2"></i>Income Categories ({{ income_categories|length }})</span>
+            <small class="text-muted">Used for salary, investments &amp; earnings</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for cat in income_categories %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card h-100 border p-3 shadow-none bg-body-tertiary">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="metric-icon-box" style="background-color: {{ cat.color }}20; color: {{ cat.color }}; width: 38px; height: 38px; font-size: 1.1rem;">
+                                    <i class="bi {{ cat.icon }}"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">{{ cat.name }}</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary small" style="font-size: 0.7rem;">
+                                        {{ cat.tx_count }} transaction{{ cat.tx_count|pluralize }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-link text-muted p-0" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item py-1 small" href="{% url 'category-update' cat.pk %}"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                    <li><a class="dropdown-item py-1 small text-danger" href="{% url 'category-delete' cat.pk %}"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% if cat.description %}
+                        <p class="text-muted small mb-0 text-truncate">{{ cat.description }}</p>
+                        {% else %}
+                        <p class="text-muted small mb-0 fst-italic">No description</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-4 text-muted small">
+                    No income categories configured. Click "Add Income Category" to start.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

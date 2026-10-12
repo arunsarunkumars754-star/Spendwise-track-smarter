@@ -7,12 +7,5 @@
         "**/__pycache__",
         "_site"
     ],
-    "reportAttributeAccessIssue": "none",
-    "reportOptionalMemberAccess": "none",
-    "reportOperatorIssue": "none",
-    "reportUnusedImport": "none",
-    "reportIncompatibleMethodOverride": "none",
-    "reportIndexIssue": "none",
-    "reportOptionalSubscript": "none",
-    "reportInvalidTypeArguments": "none"
+    "typeCheckingMode": "off"
 }
